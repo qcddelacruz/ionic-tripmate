@@ -1,0 +1,129 @@
+<ion-header class="ion-no-border">
+  <app-nav></app-nav>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="wishlist-page">
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+      <section class="dashboard-content wishlist-content">
+        <div class="content-header">
+          <h1>My Wishlist</h1>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="wishlist-toolbar" *ngIf="wishlistItems.length > 0">
+          <div class="wishlist-sort">
+            <select id="wishlistSort" class="sort-select" [(ngModel)]="selectedSort" (change)="sortItems()">
+              <option value="recent">Recently Added</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+          <div class="wishlist-view">
+            <button class="view-btn" [class.active]="viewMode === 'grid'" (click)="setViewMode('grid')" aria-label="Grid view">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <rect x="14" y="14" width="7" height="7" rx="1"/>
+              </svg>
+            </button>
+            <button class="view-btn" [class.active]="viewMode === 'list'" (click)="setViewMode('list')" aria-label="List view">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Wishlist Items -->
+        <div class="wishlist-grid" [attr.data-view]="viewMode" *ngIf="wishlistItems.length > 0">
+          <div class="wishlist-card" *ngFor="let item of wishlistItems">
+            <a [routerLink]="['/stays', item.id]" class="wishlist-image-link">
+              <div class="wishlist-image">
+                <img [src]="item.imageUrl" [alt]="item.title" loading="lazy"
+                     (error)="onImageError($event)" />
+                <span class="wishlist-badge" *ngIf="item.badge">{{ item.badge }}</span>
+              </div>
+            </a>
+            <div class="wishlist-card-content">
+              <div class="wishlist-header">
+                <h3 class="wishlist-title">
+                  <a [routerLink]="['/stays', item.id]">{{ item.title }}</a>
+                </h3>
+                <button class="wishlist-remove" (click)="removeItem(item.id)" aria-label="Remove item">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <p class="wishlist-location">{{ item.location }}</p>
+              <div class="wishlist-meta">
+                <span class="wishlist-rating">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                  {{ item.rating }} ({{ item.reviewsCount }})
+                </span>
+              </div>
+              <div class="wishlist-footer">
+                <div class="wishlist-price">
+                  <strong>₱{{ item.price | number }}</strong> <span>/ night</span>
+                </div>
+                <a [routerLink]="['/stays', item.id]" class="btn-primary btn-sm">View Stay</a>
+              </div>
+              <p class="wishlist-saved">{{ item.savedDate }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="empty-state" *ngIf="wishlistItems.length === 0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <h3>Your wishlist is empty</h3>
+          <p>Save stays you love to find them easily later.</p>
+          <a routerLink="/stays" class="btn-primary">Explore Stays</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a routerLink="/home" class="logo">
+          <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img"
+               onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback',textContent:'TripMate'}))">
+        </a>
+        <p>A Filipino-built platform for booking hotels and house rentals across the Philippines.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a routerLink="/stays">Stays</a>
+          <a routerLink="/home" fragment="how">How it works</a>
+          <a routerLink="/signup" [queryParams]="{ type: 'host' }">Become a Host</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Cancellation policy</a>
+          <a href="#">Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 TripMate. Made in Quezon City.</span>
+      <span>Terms &middot; Privacy</span>
+    </div>
+  </footer>
+</ion-content>

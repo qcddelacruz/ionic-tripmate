@@ -1,0 +1,63 @@
+<nav class="main-nav">
+  <a routerLink="/home" class="logo">
+    @if (!logoFailed) {
+      <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img" (error)="logoFailed = true" />
+    } @else {
+      <span class="logo-text">TripMate</span>
+    }
+  </a>
+
+  <div class="nav-links">
+    <a routerLink="/dashboard" routerLinkActive="is-current">Trips</a>
+    <a routerLink="/wishlist" routerLinkActive="is-current">Wishlist</a>
+    <a routerLink="/profile" routerLinkActive="is-current">Profile</a>
+  </div>
+
+  <div class="nav-auth">
+    @if (isLoggedIn && (user$ | async); as user) {
+      <div class="user-menu">
+        <button class="user-avatar-btn" (click)="toggleUserDropdown()" aria-label="User menu">
+          @if (user.avatarUrl) {
+            <img [src]="user.avatarUrl" alt="Avatar" class="avatar-img" />
+          } @else {
+            <span>{{ user.initials }}</span>
+          }
+        </button>
+
+        <div class="user-dropdown" [class.open]="isUserDropdownOpen">
+          <div class="dropdown-header">
+            <span class="dropdown-name">{{ user.firstName }} {{ user.lastName }}</span>
+            <span class="dropdown-email">{{ user.email }}</span>
+          </div>
+          <hr class="dropdown-divider">
+          <a routerLink="/dashboard" class="dropdown-item" (click)="isUserDropdownOpen = false">
+            <ion-icon name="location-outline"></ion-icon>
+            <span>My Trips</span>
+          </a>
+          <a routerLink="/wishlist" class="dropdown-item" (click)="isUserDropdownOpen = false">
+            <ion-icon name="heart-outline"></ion-icon>
+            <span>Wishlist</span>
+          </a>
+          <a routerLink="/profile" class="dropdown-item" (click)="isUserDropdownOpen = false">
+            <ion-icon name="person-outline"></ion-icon>
+            <span>Profile</span>
+          </a>
+          @if (user.mode === 'host') {
+            <a routerLink="/host/dashboard" class="dropdown-item" (click)="isUserDropdownOpen = false">
+              <ion-icon name="swap-horizontal-outline"></ion-icon>
+              <span>Switch to Host</span>
+            </a>
+          }
+          <hr class="dropdown-divider">
+          <button class="dropdown-item" (click)="logout()">
+            <ion-icon name="log-out-outline"></ion-icon>
+            <span>Log out</span>
+          </button>
+        </div>
+      </div>
+    } @else {
+      <a routerLink="/signup" class="nav-cta">Get started</a>
+      <a routerLink="/login" class="nav-login">Log in</a>
+    }
+  </div>
+</nav>

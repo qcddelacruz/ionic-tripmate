@@ -1,0 +1,163 @@
+<ion-header class="ion-no-border">
+  <header class="top-nav">
+    <a routerLink="/home" class="logo">
+      <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback',textContent:'TripMate'}))">
+    </a>
+    <a routerLink="/home" class="back-link">
+      <ion-icon name="arrow-back-outline"></ion-icon>
+      Back to home
+    </a>
+  </header>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="signup-page">
+  <main>
+    <div class="card" [class.host-mode]="mode === 'host'" id="signup-card">
+      <div class="tabs" role="tablist">
+        <button 
+          type="button" 
+          [class.active]="mode === 'guest'" 
+          (click)="setMode('guest')" 
+          role="tab">
+          <ion-icon name="person-outline"></ion-icon>
+          Guest
+        </button>
+        <button 
+          type="button" 
+          [class.active]="mode === 'host'" 
+          (click)="setMode('host')" 
+          role="tab">
+          <ion-icon name="home-outline"></ion-icon>
+          Host
+        </button>
+      </div>
+
+      <h1 id="form-title">{{ mode === 'guest' ? 'Create an Account' : 'Become a Host' }}</h1>
+      <p class="sub">Already have an account? <a routerLink="/login">Log in</a></p>
+
+      <form (ngSubmit)="onSubmit()" novalidate>
+        <div class="field" [class.has-error]="errors['fullName']">
+          <label for="fullName">Full Name</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            name="fullName" 
+            placeholder="Juan Dela Cruz" 
+            autocomplete="name" 
+            [(ngModel)]="formData.fullName" 
+            [class.invalid]="errors['fullName']"
+            required />
+          @if (errors['fullName']) {
+            <div class="error-msg">{{ errors['fullName'] }}</div>
+          }
+        </div>
+
+        <div class="field" [class.has-error]="errors['email']">
+          <label for="email">Email Address</label>
+          <span class="field-icon">
+            <ion-icon name="mail-outline"></ion-icon>
+          </span>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="you@example.com" 
+            autocomplete="email" 
+            [(ngModel)]="formData.email" 
+            [class.invalid]="errors['email']"
+            required />
+          @if (errors['email']) {
+            <div class="error-msg">{{ errors['email'] }}</div>
+          }
+        </div>
+
+        @if (mode === 'host') {
+          <div class="field host-only">
+            <label for="businessName">Property / Business Name</label>
+            <input 
+              type="text" 
+              id="businessName" 
+              name="businessName" 
+              placeholder="e.g. Vessel Hostel & Surf" 
+              autocomplete="organization" 
+              [(ngModel)]="formData.businessName" />
+          </div>
+        }
+
+        <div class="field" [class.has-error]="errors['password']">
+          <label for="password">Password</label>
+          <span class="field-icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </span>
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password" 
+            name="password" 
+            placeholder="At least 8 characters" 
+            autocomplete="new-password" 
+            [(ngModel)]="formData.password" 
+            [class.invalid]="errors['password']"
+            required />
+          <button 
+            type="button" 
+            class="toggle-pw" 
+            (click)="togglePasswordVisibility('password')" 
+            aria-label="Toggle password visibility">
+            <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+          @if (errors['password']) {
+            <div class="error-msg">{{ errors['password'] }}</div>
+          }
+        </div>
+
+        <div class="field" [class.has-error]="errors['confirmPassword']">
+          <label for="confirmPassword">Confirm Password</label>
+          <span class="field-icon">
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </span>
+          <input 
+            [type]="showConfirmPassword ? 'text' : 'password'" 
+            id="confirmPassword" 
+            name="confirmPassword" 
+            placeholder="Re-enter password" 
+            autocomplete="new-password" 
+            [(ngModel)]="formData.confirmPassword" 
+            [class.invalid]="errors['confirmPassword']"
+            required />
+          <button 
+            type="button" 
+            class="toggle-pw" 
+            (click)="togglePasswordVisibility('confirmPassword')" 
+            aria-label="Toggle confirm password visibility">
+            <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+          @if (errors['confirmPassword']) {
+            <div class="error-msg">{{ errors['confirmPassword'] }}</div>
+          }
+        </div>
+
+        <div class="checkbox-row" [class.has-error]="errors['terms']">
+          <input 
+            type="checkbox" 
+            id="terms" 
+            name="terms" 
+            [(ngModel)]="formData.terms" />
+          <label for="terms" style="margin:0;">
+            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+          </label>
+        </div>
+        @if (errors['terms']) {
+          <div class="terms-error-msg">{{ errors['terms'] }}</div>
+        }
+
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Creating account…' : 'Create Account' }}
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+        </button>
+      </form>
+
+      <p class="secure-note">Secure signup powered by TripMate</p>
+    </div>
+  </main>
+</ion-content>

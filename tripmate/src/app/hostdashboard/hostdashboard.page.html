@@ -1,0 +1,334 @@
+<ion-split-pane contentId="host-main-content" when="lg" class="host-dashboard-page">
+
+  <!-- Sidebar -->
+  <ion-menu contentId="host-main-content" side="start" class="host-menu">
+    <ion-header>
+      <ion-toolbar>
+        <ion-label class="menu-title">Host Menu</ion-label>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="menu-content">
+      <ion-list lines="none">
+        <ion-item
+          button
+          [class.active]="activeTab === 'overview'"
+          (click)="setTab('overview')"
+        >
+          <ion-icon slot="start" name="grid-outline"></ion-icon>
+          <ion-label>Overview</ion-label>
+        </ion-item>
+        <ion-item
+          button
+          [class.active]="activeTab === 'listings'"
+          (click)="setTab('listings')"
+        >
+          <ion-icon slot="start" name="home-outline"></ion-icon>
+          <ion-label>My Listings</ion-label>
+        </ion-item>
+        <ion-item
+          button
+          [class.active]="activeTab === 'bookings'"
+          (click)="setTab('bookings')"
+        >
+          <ion-icon slot="start" name="calendar-outline"></ion-icon>
+          <ion-label>Bookings</ion-label>
+        </ion-item>
+        <ion-item
+          button
+          [class.active]="activeTab === 'earnings'"
+          (click)="setTab('earnings')"
+        >
+          <ion-icon slot="start" name="cash-outline"></ion-icon>
+          <ion-label>Earnings</ion-label>
+        </ion-item>
+      </ion-list>
+
+      <div class="menu-footer">
+        <ion-button expand="block" routerLink="/host/listings" [queryParams]="{ action: 'new' }">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Create Listing
+        </ion-button>
+      </div>
+    </ion-content>
+  </ion-menu>
+
+  <!-- Main pane -->
+  <div class="ion-page" id="host-main-content">
+    <ion-header class="host-header">
+      <ion-toolbar class="host-toolbar">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+          <a routerLink="/dashboard" class="logo">
+            <img src="assets/images/tripmateo.svg" alt="TripMate" class="logo-img" />
+            <span class="host-badge">Host</span>
+          </a>
+        </ion-buttons>
+
+        <nav class="host-nav-tabs">
+          <a routerLink="/host/dashboard" routerLinkActive="active">Dashboard</a>
+          <a routerLink="/host/listings" routerLinkActive="active">Listings</a>
+          <a (click)="setTab('earnings')" [class.active]="activeTab === 'earnings'">Earnings</a>
+        </nav>
+
+        <ion-buttons slot="end">
+          <ion-button id="user-avatar-trigger" fill="clear" class="user-avatar-btn">
+            {{ user.initials }}
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="host-content">
+      <div class="content-header">
+        <h1>
+          <ng-container [ngSwitch]="activeTab">
+            <ng-container *ngSwitchCase="'overview'">Host Overview</ng-container>
+            <ng-container *ngSwitchCase="'listings'">Manage Listings</ng-container>
+            <ng-container *ngSwitchCase="'bookings'">Bookings</ng-container>
+            <ng-container *ngSwitchCase="'earnings'">Earnings</ng-container>
+          </ng-container>
+        </h1>
+        <p class="content-subtitle" *ngIf="activeTab === 'overview'">
+          Welcome back. Here's what's happening with your properties.
+        </p>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div *ngIf="activeTab === 'overview'" class="tab-section">
+        <ion-grid class="stats-grid">
+          <ion-row>
+            <ion-col size="6" size-md="3">
+              <ion-card class="stat-card">
+                <ion-card-content>
+                  <div class="stat-icon total-listings">
+                    <ion-icon name="business-outline"></ion-icon>
+                  </div>
+                  <div class="stat-info">
+                    <span class="stat-value">{{ stats.totalListings }}</span>
+                    <span class="stat-label">Total Listings</span>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <ion-card class="stat-card">
+                <ion-card-content>
+                  <div class="stat-icon pending-bookings">
+                    <ion-icon name="hourglass-outline"></ion-icon>
+                  </div>
+                  <div class="stat-info">
+                    <span class="stat-value">{{ stats.activeBookings }}</span>
+                    <span class="stat-label">Active Bookings</span>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <ion-card class="stat-card">
+                <ion-card-content>
+                  <div class="stat-icon total-earnings">
+                    <ion-icon name="cash-outline"></ion-icon>
+                  </div>
+                  <div class="stat-info">
+                    <span class="stat-value">{{ formatCurrency(stats.monthlyEarnings) }}</span>
+                    <span class="stat-label">Monthly Earnings</span>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6" size-md="3">
+              <ion-card class="stat-card">
+                <ion-card-content>
+                  <div class="stat-icon upcoming-stays">
+                    <ion-icon name="people-outline"></ion-icon>
+                  </div>
+                  <div class="stat-info">
+                    <span class="stat-value">{{ stats.occupancyRate }}%</span>
+                    <span class="stat-label">Occupancy Rate</span>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+        <div class="section">
+          <div class="section-header-row">
+            <h2>Recent Bookings</h2>
+            <ion-button size="small" fill="outline" (click)="setTab('bookings')">View all</ion-button>
+          </div>
+
+          <div class="bookings-table-container" *ngIf="recentBookings.length; else noRecentBookings">
+            <div class="table-scroll">
+              <table class="bookings-table">
+                <thead>
+                  <tr>
+                    <th>Guest</th>
+                    <th>Property</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let booking of recentBookings">
+                    <td>
+                      <div class="guest-info">
+                        <span class="guest-name">{{ booking.guestName }}</span>
+                        <span class="guest-email">{{ booking.guestEmail }}</span>
+                      </div>
+                    </td>
+                    <td>{{ booking.property }}</td>
+                    <td>{{ booking.dates }}</td>
+                    <td>
+                      <ion-badge class="status-badge" [class]="'status-' + booking.status">
+                        {{ booking.status }}
+                      </ion-badge>
+                    </td>
+                    <td>{{ formatCurrency(booking.amount) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <ng-template #noRecentBookings>
+            <div class="empty-state">
+              <p>No recent bookings to display.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- LISTINGS -->
+      <div *ngIf="activeTab === 'listings'" class="tab-section">
+        <div class="section">
+          <div class="section-header-row">
+            <h2>Manage Listings</h2>
+            <ion-button size="small" routerLink="/host/listings" [queryParams]="{ action: 'new' }">
+              <ion-icon slot="start" name="add-outline"></ion-icon>
+              New Listing
+            </ion-button>
+          </div>
+
+          <ion-grid *ngIf="listings.length; else noListings">
+            <ion-row>
+              <ion-col size="12" size-md="6" size-lg="4" *ngFor="let listing of listings">
+                <ion-card class="host-listing-card">
+                  <div class="host-listing-image">
+                    <img *ngIf="listing.image" [src]="listing.image" [alt]="listing.title" />
+                    <div *ngIf="!listing.image" class="placeholder">🏡</div>
+                    <span class="pending-badge" *ngIf="listing.pending">Pending review</span>
+                  </div>
+                  <ion-card-content>
+                    <h3 class="host-listing-title">{{ listing.title }}</h3>
+                    <p class="host-listing-location">{{ listing.location }}</p>
+                    <div class="host-listing-meta">
+                      <span class="host-listing-price">
+                        {{ formatCurrency(listing.price) }}
+                        <span>/ {{ listing.pricePeriod }}</span>
+                      </span>
+                      <span class="host-listing-stats">{{ listing.bookingsCount }} bookings</span>
+                    </div>
+                    <div class="host-listing-actions">
+                      <ion-button size="small" fill="outline" expand="block">Edit</ion-button>
+                      <ion-button size="small" fill="solid" expand="block">View</ion-button>
+                    </div>
+                  </ion-card-content>
+                </ion-card>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+          <ng-template #noListings>
+            <div class="empty-state">
+              <ion-icon name="home-outline"></ion-icon>
+              <h3>No listings yet</h3>
+              <p>Create your first property listing to start welcoming guests.</p>
+              <ion-button routerLink="/host/listings" [queryParams]="{ action: 'new' }">
+                Create Listing
+              </ion-button>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- BOOKINGS -->
+      <div *ngIf="activeTab === 'bookings'" class="tab-section">
+        <div class="section">
+          <div class="bookings-table-container" *ngIf="bookings.length; else noBookings">
+            <div class="table-scroll">
+              <table class="bookings-table">
+                <thead>
+                  <tr>
+                    <th>Guest</th>
+                    <th>Property</th>
+                    <th>Dates</th>
+                    <th>Status</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let booking of bookings">
+                    <td>
+                      <div class="guest-info">
+                        <span class="guest-name">{{ booking.guestName }}</span>
+                        <span class="guest-email">{{ booking.guestEmail }}</span>
+                      </div>
+                    </td>
+                    <td>{{ booking.property }}</td>
+                    <td>{{ booking.dates }}</td>
+                    <td>
+                      <ion-badge class="status-badge" [class]="'status-' + booking.status">
+                        {{ booking.status }}
+                      </ion-badge>
+                    </td>
+                    <td>{{ formatCurrency(booking.amount) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <ng-template #noBookings>
+            <div class="empty-state">
+              <p>No bookings found.</p>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- EARNINGS -->
+      <div *ngIf="activeTab === 'earnings'" class="tab-section">
+        <div class="empty-state">
+          <ion-icon name="cash-outline"></ion-icon>
+          <h3>Earnings Dashboard</h3>
+          <p>Detailed earnings reports and payout management will be available here.</p>
+        </div>
+      </div>
+    </ion-content>
+  </div>
+</ion-split-pane>
+
+<!-- User dropdown -->
+<ion-popover trigger="user-avatar-trigger" side="bottom" alignment="end" [dismissOnSelect]="true">
+  <ng-template>
+    <ion-content class="user-dropdown-content">
+      <div class="dropdown-header">
+        <span class="dropdown-name">{{ user.name }}</span>
+        <span class="dropdown-email">{{ user.email }}</span>
+      </div>
+      <ion-list lines="none">
+        <ion-item button routerLink="/dashboard" detail="false">
+          <ion-icon slot="start" name="swap-horizontal-outline"></ion-icon>
+          <ion-label>Switch to Traveler</ion-label>
+        </ion-item>
+        <ion-item button routerLink="/profile" detail="false">
+          <ion-icon slot="start" name="person-circle-outline"></ion-icon>
+          <ion-label>Profile Settings</ion-label>
+        </ion-item>
+        <ion-item button (click)="logout()" detail="false">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          <ion-label>Log out</ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-content>
+  </ng-template>
+</ion-popover>

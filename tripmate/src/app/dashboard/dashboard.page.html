@@ -1,0 +1,158 @@
+<ion-header class="ion-no-border">
+  <app-nav></app-nav>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dashboard-page">
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+
+      <!-- Mobile Sidebar Overlay -->
+      <div class="sidebar-overlay" [class.open]="isSidebarOpen" (click)="toggleSidebar()"></div>
+
+      <!-- Sidebar -->
+      <aside class="dashboard-sidebar" [class.open]="isSidebarOpen">
+        <div class="sidebar-header">
+          <h2>My Trips</h2>
+          <button class="sidebar-close" (click)="toggleSidebar()" aria-label="Close sidebar">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="sidebar-tab" [class.active]="currentFilter === 'upcoming'" (click)="setFilter('upcoming')">
+            <ion-icon name="calendar-outline" class="sidebar-tab-icon"></ion-icon>
+            <span class="sidebar-tab-label">Upcoming</span>
+            <span class="sidebar-tab-count">{{ upcomingCount }}</span>
+          </button>
+
+          <button class="sidebar-tab" [class.active]="currentFilter === 'past'" (click)="setFilter('past')">
+            <ion-icon name="time-outline" class="sidebar-tab-icon"></ion-icon>
+            <span class="sidebar-tab-label">Past Trips</span>
+            <span class="sidebar-tab-count">{{ pastCount }}</span>
+          </button>
+
+          <button class="sidebar-tab" [class.active]="currentFilter === 'pending'" (click)="setFilter('pending')">
+            <ion-icon name="time-outline" class="sidebar-tab-icon"></ion-icon>
+            <span class="sidebar-tab-label">Pending</span>
+            <span class="sidebar-tab-count">{{ pendingCount }}</span>
+          </button>
+
+          <button class="sidebar-tab" [class.active]="currentFilter === 'cancelled'" (click)="setFilter('cancelled')">
+            <ion-icon name="close-outline" class="sidebar-tab-icon"></ion-icon>
+            <span class="sidebar-tab-label">Cancelled</span>
+            <span class="sidebar-tab-count">{{ cancelledCount }}</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Main Content Area -->
+      <section class="dashboard-content">
+        <div class="content-header">
+          <button class="mobile-menu-btn" (click)="toggleSidebar()" aria-label="Open menu">
+            <ion-icon name="menu-outline"></ion-icon>
+          </button>
+          <div>
+            <h1>
+              @switch (currentFilter) {
+                @case ('upcoming') { Upcoming Trips }
+                @case ('pending') { Pending Confirmation }
+                @case ('past') { Past Trips }
+                @case ('cancelled') { Cancelled Bookings }
+              }
+            </h1>
+            <p class="content-subtitle">Manage your bookings and travel plans in one place.</p>
+          </div>
+        </div>
+
+        <div class="trips-section">
+          <div class="section-header">
+            <h2 class="capitalize">{{ currentFilter }}</h2>
+            <span class="trip-count">{{ filteredTrips.length }}</span>
+          </div>
+
+          <!-- Trip Cards Grid -->
+          @if (filteredTrips.length > 0) {
+            <div class="trips-grid">
+              @for (trip of filteredTrips; track trip.id) {
+                <div class="trip-card">
+                  <div class="trip-image">
+                    <img [src]="trip.image" [alt]="trip.title" />
+                    <span class="trip-status" [ngClass]="'badge-' + trip.status">
+                      {{ trip.status }}
+                    </span>
+                  </div>
+
+                  <div class="trip-content">
+                    <div class="trip-header">
+                      <h3 class="trip-title">{{ trip.title }}</h3>
+                      <span class="trip-price">₱{{ trip.price | number }}</span>
+                    </div>
+
+                    <div class="trip-meta">
+                      <div class="trip-dates">
+                        <ion-icon name="calendar-outline"></ion-icon>
+                        <span>{{ trip.dates }}</span>
+                      </div>
+                      <div class="trip-guests">
+                        <ion-icon name="people-outline"></ion-icon>
+                        <span>{{ trip.guests }} Guests</span>
+                      </div>
+                    </div>
+
+                    <div class="trip-actions">
+                      <button class="btn btn-secondary btn-sm" (click)="viewTrip(trip)">View Details</button>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <!-- Empty State -->
+            <div class="empty-state">
+              <div class="empty-state-icon">
+                <ion-icon name="location-outline"></ion-icon>
+              </div>
+              <h3>No {{ currentFilter }} trips</h3>
+              <p>When you book or schedule a stay, it will appear here.</p>
+              <a routerLink="/stays" class="btn btn-primary">Find a Stay</a>
+            </div>
+          }
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a routerLink="/home" class="logo">
+          <img src="assets/images/tripmateo.svg" alt="TripMate" class="logo-img">
+        </a>
+        <p>A Filipino-built platform for booking hotels and house rentals across the Philippines.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a routerLink="/stays">Stays</a>
+          <a routerLink="/home" fragment="how">How it works</a>
+          <a routerLink="/signup" [queryParams]="{ type: 'host' }">Become a Host</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Cancellation policy</a>
+          <a href="#">Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 TripMate. Made in Quezon City.</span>
+      <span>Terms &middot; Privacy</span>
+    </div>
+  </footer>
+</ion-content>

@@ -1,0 +1,199 @@
+<ion-header class="ion-no-border">
+  <app-nav></app-nav>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="profile-page">
+  <main class="dashboard-main">
+    <div class="dashboard-container">
+      <section class="dashboard-content profile-content">
+        <div class="content-header">
+          <h1>Profile Settings</h1>
+        </div>
+
+        <div class="profile-sections">
+          <!-- Account Information Section -->
+          <section class="profile-section" id="accountSection">
+            <div class="section-header">
+              <h2>Account Information</h2>
+            </div>
+            <form class="profile-form" (ngSubmit)="saveAccount()">
+              <div class="profile-avatar-row">
+                <div class="avatar-upload">
+                  <div class="avatar-preview">
+                    @if (user.avatarUrl) {
+                      <img [src]="user.avatarUrl" alt="Profile preview">
+                    } @else {
+                      <span class="avatar-initials">{{ user.initials }}</span>
+                    }
+                  </div>
+                  <label class="avatar-upload-btn">
+                    <ion-icon name="cloud-upload-outline"></ion-icon>
+                    <span>Change Photo</span>
+                    <input type="file" accept="image/*" (change)="onAvatarChange($event)" hidden>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="firstName">First Name</label>
+                  <input type="text" id="firstName" name="firstName" class="form-input" [(ngModel)]="user.firstName" required>
+                </div>
+                <div class="form-group">
+                  <label for="lastName">Last Name</label>
+                  <input type="text" id="lastName" name="lastName" class="form-input" [(ngModel)]="user.lastName">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-input" [(ngModel)]="user.email" required>
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" class="form-input" [(ngModel)]="user.phone" placeholder="+63 9XX XXX XXXX">
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Save Changes</button>
+              </div>
+              @if (accountMsg) {
+                <p class="form-hint" [style.color]="accountError ? '#c0392b' : '#2e7d32'">{{ accountMsg }}</p>
+              }
+            </form>
+          </section>
+
+          <!-- Security Section -->
+          <section class="profile-section" id="securitySection">
+            <div class="section-header">
+              <h2>Security</h2>
+            </div>
+            <form class="profile-form" (ngSubmit)="updatePassword()">
+              <div class="form-group">
+                <label for="currentPassword">Current Password</label>
+                <input type="password" id="currentPassword" name="currentPassword" class="form-input" [(ngModel)]="security.currentPassword" autocomplete="current-password">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="newPassword">New Password</label>
+                  <input type="password" id="newPassword" name="newPassword" class="form-input" [(ngModel)]="security.newPassword" autocomplete="new-password">
+                  <p class="form-hint">At least 8 characters</p>
+                </div>
+                <div class="form-group">
+                  <label for="confirmPassword">Confirm New Password</label>
+                  <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" [(ngModel)]="security.confirmPassword" autocomplete="new-password">
+                </div>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn-primary">Update Password</button>
+              </div>
+              @if (passwordMsg) {
+                <p class="form-hint" [style.color]="passwordError ? '#c0392b' : '#2e7d32'">{{ passwordMsg }}</p>
+              }
+            </form>
+          </section>
+
+          <!-- Notifications Section -->
+          <section class="profile-section" id="notificationsSection">
+            <div class="section-header">
+              <h2>Notifications</h2>
+              <p class="section-description">Choose how you'd like to be notified about your bookings and account activity.</p>
+            </div>
+            <div class="notification-settings">
+              <div class="notification-item">
+                <div class="notification-info">
+                  <h3>Booking Confirmations</h3>
+                  <p>Get notified when a host confirms or declines your booking request.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifBooking" [(ngModel)]="notifications.booking" [ngModelOptions]="{standalone: true}">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <h3>Payment Receipts</h3>
+                  <p>Receive email receipts for all payments made.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifPayment" [(ngModel)]="notifications.payment" [ngModelOptions]="{standalone: true}">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <h3>Reminders</h3>
+                  <p>Get reminders before your upcoming trips (check-in, check-out).</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifReminders" [(ngModel)]="notifications.reminders" [ngModelOptions]="{standalone: true}">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="notification-item">
+                <div class="notification-info">
+                  <h3>Promotions &amp; Updates</h3>
+                  <p>Receive occasional emails about special offers and platform updates.</p>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifPromo" [(ngModel)]="notifications.promo" [ngModelOptions]="{standalone: true}">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- Danger Zone Section -->
+          <section class="profile-section danger-zone" id="dangerSection">
+            <div class="section-header">
+              <h2>Danger Zone</h2>
+              <p class="section-description">Irreversible actions. Please proceed with caution.</p>
+            </div>
+            <div class="danger-actions">
+              <div class="danger-item">
+                <div class="danger-info">
+                  <h3>Delete Account</h3>
+                  <p>Permanently delete your account and all associated data. This action cannot be undone.</p>
+                </div>
+                <button type="button" class="btn-danger" (click)="deleteAccount()">Delete Account</button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a routerLink="/home" class="logo">
+          <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img">
+        </a>
+        <p>A Filipino-built platform for booking hotels and house rentals across the Philippines.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a routerLink="/stays">Stays</a>
+          <a routerLink="/home" fragment="how">How it works</a>
+          <a routerLink="/signup" [queryParams]="{ type: 'host' }">Become a Host</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Cancellation policy</a>
+          <a href="#">Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 TripMate. Made in Quezon City.</span>
+      <span>Terms &middot; Privacy</span>
+    </div>
+  </footer>
+</ion-content>

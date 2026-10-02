@@ -1,0 +1,60 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component.
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * Disabled: TripMate is a light-only design. Leave all three palettes off.
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+/**
+ * TripMate palette (used by the host dashboard, host listings, and popovers)
+ * -----------------------------------------------------
+ */
+:root {
+  color-scheme: light;
+
+  --cream: #f8f5ef;
+  --cream-dark: #e8e1d6;
+  --white: #ffffff;
+
+  --teal-50: #eef8f6;
+  --teal-100: #d4ede9;
+  --teal-200: #aadbd3;
+  --teal-300: #7fc6bb;
+  --teal-500: #318f82;
+  --teal-600: #23796f;
+  --teal-700: #175f58;
+  --teal-900: #123f3c;
+
+  --coral: #e86543;
+  --ink: #292824;
+  --ink-light: #777268;
+
+  --ion-text-color: #292824;
+}

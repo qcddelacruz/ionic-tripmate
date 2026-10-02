@@ -1,0 +1,803 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      TripMate
+      <span class="host-badge">HOST</span>
+    </ion-title>
+
+    <ion-button
+      slot="end"
+      fill="outline"
+      size="small"
+      (click)="saveDraft()"
+    >
+      Save & Exit
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- STEPPER -->
+
+  <div class="stepper-wrapper">
+
+    <div class="progress-line">
+      <div
+        class="progress-value"
+        [style.width.%]="progress"
+      ></div>
+    </div>
+
+    <div class="stepper">
+
+      <div
+        class="step"
+        *ngFor="let step of steps; let i = index"
+        [class.active]="currentStep === i + 1"
+        [class.completed]="currentStep > i + 1"
+        (click)="goToStep(i + 1)"
+      >
+        <div class="step-circle">
+          {{ i + 1 }}
+        </div>
+
+        <span>{{ step }}</span>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <main class="wizard-container">
+
+    <!-- ===================== -->
+    <!-- STEP 1: BASICS -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 1">
+
+      <h1>The Basics</h1>
+
+      <p class="description">
+        Tell guests what your property is all about.
+      </p>
+
+      <div class="form-group">
+
+        <ion-input
+          label="Property Name"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="e.g. Sunny Beachfront Villa"
+          [(ngModel)]="listing.propertyName">
+        </ion-input>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <ion-select
+          label="Property Type"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="Select type..."
+          [(ngModel)]="listing.propertyType">
+
+          <ion-select-option value="house">
+            House
+          </ion-select-option>
+
+          <ion-select-option value="apartment">
+            Apartment / Condo
+          </ion-select-option>
+
+          <ion-select-option value="hotel">
+            Hotel Room
+          </ion-select-option>
+
+          <ion-select-option value="guesthouse">
+            Guesthouse
+          </ion-select-option>
+
+        </ion-select>
+
+      </div>
+
+
+      <h3>Capacity & Rooms</h3>
+
+      <div class="counter-list">
+
+        <!-- GUESTS -->
+
+        <div class="counter">
+
+          <span>Max Guests</span>
+
+          <div class="counter-buttons">
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="decrement('guests')">
+
+              <ion-icon name="remove-outline"></ion-icon>
+
+            </ion-button>
+
+            <strong>
+              {{ listing.guests }}
+            </strong>
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="increment('guests')">
+
+              <ion-icon name="add-outline"></ion-icon>
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+
+        <!-- BEDROOMS -->
+
+        <div class="counter">
+
+          <span>Bedrooms</span>
+
+          <div class="counter-buttons">
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="decrement('bedrooms')">
+
+              <ion-icon name="remove-outline"></ion-icon>
+
+            </ion-button>
+
+            <strong>
+              {{ listing.bedrooms }}
+            </strong>
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="increment('bedrooms')">
+
+              <ion-icon name="add-outline"></ion-icon>
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+
+        <!-- BATHROOMS -->
+
+        <div class="counter">
+
+          <span>Bathrooms</span>
+
+          <div class="counter-buttons">
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="decrement('bathrooms')">
+
+              <ion-icon name="remove-outline"></ion-icon>
+
+            </ion-button>
+
+            <strong>
+              {{ listing.bathrooms }}
+            </strong>
+
+            <ion-button
+              fill="outline"
+              size="small"
+              (click)="increment('bathrooms')">
+
+              <ion-icon name="add-outline"></ion-icon>
+
+            </ion-button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <ion-input
+          label="Location / Address"
+          labelPlacement="stacked"
+          fill="outline"
+          placeholder="Enter full address"
+          [(ngModel)]="listing.address">
+        </ion-input>
+
+        <small>
+          Enter the complete address including city and country.
+        </small>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 2: PRICING -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 2">
+
+      <h1>Pricing Setup</h1>
+
+      <p class="description">
+        Set your base nightly rate and additional fees.
+      </p>
+
+
+      <div class="pricing-layout">
+
+        <div>
+
+          <div class="form-group">
+
+            <ion-input
+              type="number"
+              label="Base Price / Night (₱)"
+              labelPlacement="stacked"
+              fill="outline"
+              [(ngModel)]="listing.basePrice">
+            </ion-input>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <ion-input
+              type="number"
+              label="Cleaning Fee (₱)"
+              labelPlacement="stacked"
+              fill="outline"
+              [(ngModel)]="listing.cleaningFee">
+            </ion-input>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <ion-input
+              type="number"
+              label="Security Deposit (₱)"
+              labelPlacement="stacked"
+              fill="outline"
+              [(ngModel)]="listing.securityDeposit">
+            </ion-input>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <ion-input
+              type="number"
+              label="Weekly Discount (%)"
+              labelPlacement="stacked"
+              fill="outline"
+              [(ngModel)]="listing.weeklyDiscount">
+            </ion-input>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRICE PREVIEW -->
+
+        <div class="price-card">
+
+          <h3>Guest Price Preview</h3>
+
+          <p>For a 1-night stay</p>
+
+
+          <div class="price-row">
+
+            <span>Base rate</span>
+
+            <strong>
+              ₱{{ listing.basePrice || 0 }}
+            </strong>
+
+          </div>
+
+
+          <div class="price-row">
+
+            <span>Cleaning fee</span>
+
+            <strong>
+              ₱{{ listing.cleaningFee || 0 }}
+            </strong>
+
+          </div>
+
+
+          <div class="price-row">
+
+            <span>Service fee (10%)</span>
+
+            <strong>
+              ₱{{ serviceFee | number:'1.0-2' }}
+            </strong>
+
+          </div>
+
+
+          <hr>
+
+
+          <div class="price-row total">
+
+            <span>Guest pays</span>
+
+            <strong>
+              ₱{{ guestTotal | number:'1.0-2' }}
+            </strong>
+
+          </div>
+
+
+          <div class="price-row earnings">
+
+            <span>You earn</span>
+
+            <strong>
+              ₱{{ hostEarnings | number:'1.0-2' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 3: PHOTOS -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 3">
+
+      <h1>Photos</h1>
+
+      <p class="description">
+        Showcase your property with high-quality images.
+        The first image will be your cover photo.
+      </p>
+
+
+      <label class="upload-box">
+
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+
+        <h3>Upload your photos</h3>
+
+        <p>
+          Click here to browse from your device
+        </p>
+
+        <small>
+          JPG, PNG or WEBP — Maximum 20 photos
+        </small>
+
+        <input
+          type="file"
+          hidden
+          multiple
+          accept="image/jpeg,image/png,image/webp"
+          (change)="selectPhotos($event)"
+        >
+
+      </label>
+
+
+      <div class="photo-grid">
+
+        <div
+          class="photo"
+          *ngFor="let photo of photos; let i = index">
+
+          <img
+            [src]="photo"
+            alt="Property photo"
+          >
+
+          <span
+            *ngIf="i === 0"
+            class="cover-badge">
+            Cover
+          </span>
+
+          <button
+            type="button"
+            class="delete-photo"
+            (click)="removePhoto(i)">
+
+            <ion-icon name="trash-outline"></ion-icon>
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 4: AMENITIES -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 4">
+
+      <h1>Amenities</h1>
+
+      <p class="description">
+        What amenities do you offer your guests?
+      </p>
+
+
+      <div class="amenities-grid">
+
+        <div
+          *ngFor="let amenity of amenities"
+          class="amenity"
+          [class.selected]="hasAmenity(amenity.value)"
+          (click)="toggleAmenity(amenity.value)">
+
+          <ion-checkbox
+            [checked]="hasAmenity(amenity.value)">
+          </ion-checkbox>
+
+          <span>
+            {{ amenity.label }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 5: RULES -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 5">
+
+      <h1>House Rules</h1>
+
+      <p class="description">
+        Set expectations for your guests.
+      </p>
+
+
+      <div class="two-columns">
+
+        <ion-input
+          type="time"
+          label="Check-in Time"
+          labelPlacement="stacked"
+          fill="outline"
+          [(ngModel)]="listing.checkIn">
+        </ion-input>
+
+
+        <ion-input
+          type="time"
+          label="Check-out Time"
+          labelPlacement="stacked"
+          fill="outline"
+          [(ngModel)]="listing.checkOut">
+        </ion-input>
+
+      </div>
+
+
+      <div class="rule">
+
+        <span>Smoking allowed</span>
+
+        <ion-toggle
+          [(ngModel)]="listing.smoking">
+        </ion-toggle>
+
+      </div>
+
+
+      <div class="rule">
+
+        <span>Pets allowed</span>
+
+        <ion-toggle
+          [(ngModel)]="listing.pets">
+        </ion-toggle>
+
+      </div>
+
+
+      <div class="rule">
+
+        <span>Parties/events allowed</span>
+
+        <ion-toggle
+          [(ngModel)]="listing.parties">
+        </ion-toggle>
+
+      </div>
+
+
+      <div class="form-group">
+
+        <ion-textarea
+          label="Custom Rules"
+          labelPlacement="stacked"
+          fill="outline"
+          rows="5"
+          placeholder="Any other rules guests should know about..."
+          [(ngModel)]="listing.customRules">
+        </ion-textarea>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 6: CALENDAR -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 6">
+
+      <h1>Calendar & Availability</h1>
+
+      <p class="description">
+        Block dates to prevent bookings.
+      </p>
+
+
+      <div class="two-columns">
+
+        <ion-input
+          type="number"
+          label="Minimum Stay"
+          labelPlacement="stacked"
+          fill="outline"
+          [(ngModel)]="listing.minStay">
+        </ion-input>
+
+
+        <ion-input
+          type="number"
+          label="Maximum Stay"
+          labelPlacement="stacked"
+          fill="outline"
+          [(ngModel)]="listing.maxStay">
+        </ion-input>
+
+      </div>
+
+
+      <h3>September 2026</h3>
+
+      <p class="calendar-help">
+        Click a date to block or unblock it.
+      </p>
+
+
+      <div class="calendar-weekdays">
+
+        <span>Su</span>
+        <span>Mo</span>
+        <span>Tu</span>
+        <span>We</span>
+        <span>Th</span>
+        <span>Fr</span>
+        <span>Sa</span>
+
+      </div>
+
+
+      <div class="calendar">
+
+        <button
+          type="button"
+          *ngFor="let day of calendarDays"
+          [class.blocked]="isBlocked(day)"
+          (click)="toggleDate(day)">
+
+          {{ day }}
+
+        </button>
+
+      </div>
+
+
+      <div class="legend">
+
+        <span>
+          <i class="available-box"></i>
+          Available
+        </span>
+
+        <span>
+          <i class="blocked-box"></i>
+          Blocked
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ===================== -->
+    <!-- STEP 7: PUBLISH -->
+    <!-- ===================== -->
+
+    <section *ngIf="currentStep === 7">
+
+      <h1>Review & Publish</h1>
+
+      <p class="description">
+        Ready to share your property with the world?
+      </p>
+
+
+      <div class="publish-card">
+
+        <div>
+
+          <h3>Listing Status</h3>
+
+          <p>
+            {{
+              listing.published
+                ? 'Your listing will be publicly visible.'
+                : 'Currently saved as a Draft.'
+            }}
+          </p>
+
+        </div>
+
+
+        <div class="publish-toggle">
+
+          <strong>
+            {{ listing.published ? 'Published' : 'Draft' }}
+          </strong>
+
+          <ion-toggle
+            [(ngModel)]="listing.published">
+          </ion-toggle>
+
+        </div>
+
+      </div>
+
+
+      <div class="public-link">
+
+        <h3>Public Link</h3>
+
+        <p>
+          Guests can find your property at this URL once
+          published:
+        </p>
+
+        <div class="url">
+          tripmate.com/stays/{{ slug }}
+        </div>
+
+      </div>
+
+
+      <div class="review-card">
+
+        <h3>{{ listing.propertyName || 'Property Name' }}</h3>
+
+        <p>{{ listing.address || 'Property address' }}</p>
+
+        <div class="review-details">
+
+          <span>
+            {{ listing.guests }} Guests
+          </span>
+
+          <span>
+            {{ listing.bedrooms }} Bedrooms
+          </span>
+
+          <span>
+            {{ listing.bathrooms }} Bathrooms
+          </span>
+
+        </div>
+
+        <h2>
+          ₱{{ listing.basePrice || 0 }}
+          <small>/ night</small>
+        </h2>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- BOTTOM NAVIGATION -->
+
+  <div class="wizard-footer">
+
+    <ion-button
+      fill="outline"
+      [disabled]="currentStep === 1"
+      (click)="previousStep()">
+
+      <ion-icon
+        slot="start"
+        name="arrow-back-outline">
+      </ion-icon>
+
+      Back
+
+    </ion-button>
+
+
+    <span>
+      Step {{ currentStep }} of {{ totalSteps }}
+    </span>
+
+
+    <ion-button
+      (click)="nextStep()">
+
+      {{ currentStep === totalSteps ? 'Save Listing' : 'Next' }}
+
+      <ion-icon
+        *ngIf="currentStep !== totalSteps"
+        slot="end"
+        name="arrow-forward-outline">
+      </ion-icon>
+
+      <ion-icon
+        *ngIf="currentStep === totalSteps"
+        slot="end"
+        name="checkmark-circle-outline">
+      </ion-icon>
+
+    </ion-button>
+
+  </div>
+
+</ion-content>

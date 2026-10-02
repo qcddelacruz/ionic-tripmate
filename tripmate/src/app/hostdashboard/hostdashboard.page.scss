@@ -1,0 +1,507 @@
+/* ==========================================
+   Host Dashboard — Ionic Angular page styles
+   Assumes the palette below lives in src/theme/variables.scss
+   (see theme-variables-snippet.scss in this folder).
+   ========================================== */
+
+:host {
+  --host-radius-sm: 10px;
+  --host-radius-md: 14px;
+  --host-radius-lg: 16px;
+}
+
+/* ---------- Split pane / menu ---------- */
+ion-split-pane {
+  --side-width: 260px;
+  --side-min-width: 260px;
+  --side-max-width: 280px;
+}
+
+.host-menu {
+  --background: var(--white);
+  border-right: 1px solid var(--cream-dark);
+
+  ion-toolbar {
+    --background: var(--white);
+    --border-color: var(--cream-dark);
+  }
+
+  .menu-title {
+    font-family: 'Fraunces', serif;
+    font-size: 1.1rem;
+    color: var(--teal-900);
+    font-weight: 600;
+  }
+
+  .menu-content {
+    --background: var(--white);
+    --padding-top: 8px;
+  }
+
+  ion-item {
+    --background: transparent;
+    --background-hover: var(--cream);
+    --color: var(--ink-light);
+    --border-radius: var(--host-radius-sm);
+    margin: 2px 8px;
+    border-radius: var(--host-radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+
+    ion-icon {
+      color: var(--ink-light);
+    }
+
+    &.active {
+      --background: var(--teal-50);
+      --color: var(--teal-700);
+
+      ion-icon {
+        color: var(--teal-700);
+      }
+    }
+  }
+
+  .menu-footer {
+    padding: 16px;
+
+    ion-button {
+      --background: var(--teal-600);
+      --background-hover: var(--teal-700);
+      --border-radius: var(--host-radius-sm);
+      font-weight: 600;
+      text-transform: none;
+    }
+  }
+}
+
+/* ---------- Top toolbar ---------- */
+.host-header {
+  ion-toolbar.host-toolbar {
+    --background: var(--white);
+    --border-color: var(--cream-dark);
+    --padding-start: 12px;
+    --padding-end: 12px;
+    --min-height: 64px;
+  }
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.logo-img {
+  height: 32px;
+  width: auto;
+}
+
+.host-badge {
+  padding: 2px 8px;
+  background: var(--teal-100);
+  color: var(--teal-700);
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.host-nav-tabs {
+  display: none;
+  gap: 4px;
+  flex: 1;
+  justify-content: center;
+
+  a {
+    padding: 10px 16px;
+    border-radius: var(--host-radius-sm);
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink-light);
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--cream);
+      color: var(--teal-700);
+    }
+
+    &.active {
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+  }
+}
+
+@media (min-width: 992px) {
+  .host-nav-tabs {
+    display: flex;
+  }
+}
+
+.user-avatar-btn {
+  --border-radius: 50%;
+  --padding-start: 0;
+  --padding-end: 0;
+  width: 40px;
+  height: 40px;
+  --background: var(--teal-100);
+  --color: var(--teal-700);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ---------- User dropdown popover ---------- */
+.user-dropdown-content {
+  --background: var(--white);
+  width: 260px;
+
+  .dropdown-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--cream-dark);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dropdown-name {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+
+  .dropdown-email {
+    font-size: 0.8rem;
+    color: var(--ink-light);
+    margin-top: 2px;
+  }
+
+  ion-item {
+    --background: transparent;
+    --background-hover: var(--cream);
+    font-size: 0.9rem;
+    --color: var(--ink);
+
+    ion-icon {
+      color: var(--ink-light);
+    }
+  }
+}
+
+/* ---------- Main content ---------- */
+.host-content {
+  --background: var(--cream);
+  --padding-top: 24px;
+  --padding-bottom: 24px;
+  --padding-start: 24px;
+  --padding-end: 24px;
+}
+
+.content-header {
+  margin-bottom: 24px;
+
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    color: var(--teal-900);
+    margin: 0 0 4px;
+  }
+
+  .content-subtitle {
+    color: var(--ink-light);
+    font-size: 1rem;
+    margin: 0;
+  }
+}
+
+.section {
+  margin-bottom: 32px;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  h2 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.2rem;
+    color: var(--teal-900);
+    margin: 0;
+  }
+}
+
+/* ---------- Stat cards ---------- */
+.stats-grid {
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.stat-card {
+  margin: 0 0 16px;
+  border-radius: var(--host-radius-lg);
+  box-shadow: none;
+  border: 1px solid var(--cream-dark);
+
+  ion-card-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px;
+  }
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--white);
+  font-size: 1.2rem;
+
+  &.total-listings { background: linear-gradient(135deg, var(--teal-500), var(--teal-600)); }
+  &.pending-bookings { background: linear-gradient(135deg, #F59E0B, #D97706); }
+  &.upcoming-stays { background: linear-gradient(135deg, #3B82F6, #2563EB); }
+  &.total-earnings { background: linear-gradient(135deg, #10B981, #059669); }
+}
+
+.stat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-value {
+  display: block;
+  font-family: 'Fraunces', serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--teal-900);
+  line-height: 1.2;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  margin-top: 2px;
+}
+
+/* ---------- Bookings table ---------- */
+.bookings-table-container {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--host-radius-lg);
+  overflow: hidden;
+}
+
+.table-scroll {
+  overflow-x: auto;
+}
+
+.bookings-table {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+
+  th, td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+
+  th {
+    background: var(--cream);
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ink-light);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background: var(--cream);
+  }
+}
+
+.guest-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guest-name {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.guest-email {
+  font-size: 0.8rem;
+  color: var(--ink-light);
+}
+
+.status-badge {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 4px;
+  --padding-bottom: 4px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.status-pending { --background: #FEF3C7; --color: #B45309; }
+  &.status-confirmed { --background: #D1FAE5; --color: #065F46; }
+  &.status-cancelled { --background: #FEE2E2; --color: #B91C1C; }
+  &.status-completed { --background: var(--cream); --color: var(--ink-light); }
+}
+
+/* ---------- Listings grid ---------- */
+.host-listing-card {
+  border-radius: var(--host-radius-lg);
+  border: 1px solid var(--cream-dark);
+  box-shadow: none;
+  overflow: hidden;
+  margin: 0 0 16px;
+
+  ion-card-content {
+    padding: 16px;
+  }
+}
+
+.host-listing-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: var(--cream);
+  }
+}
+
+.pending-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 10px;
+  background: #FEF3C7;
+  color: #B45309;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.host-listing-title {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  color: var(--teal-900);
+  margin: 0 0 4px;
+}
+
+.host-listing-location {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+  margin: 0 0 12px;
+}
+
+.host-listing-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--cream-dark);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.host-listing-price {
+  font-family: 'Fraunces', serif;
+  font-size: 1.05rem;
+  color: var(--teal-900);
+
+  span {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 0.85rem;
+    color: var(--ink-light);
+  }
+}
+
+.host-listing-stats {
+  font-size: 0.85rem;
+  color: var(--ink-light);
+}
+
+.host-listing-actions {
+  display: flex;
+  gap: 8px;
+
+  ion-button {
+    flex: 1;
+    margin: 0;
+    text-transform: none;
+    font-weight: 600;
+  }
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--host-radius-lg);
+  color: var(--ink-light);
+
+  ion-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    color: var(--teal-300);
+  }
+
+  h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.15rem;
+    color: var(--teal-900);
+    margin: 0 0 8px;
+  }
+
+  p {
+    margin: 0 0 20px;
+    max-width: 320px;
+  }
+
+  ion-button {
+    text-transform: none;
+    font-weight: 600;
+  }
+}

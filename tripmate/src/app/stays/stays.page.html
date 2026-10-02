@@ -1,0 +1,324 @@
+<ion-header class="ion-no-border">
+  <nav class="main-nav">
+    <a routerLink="/home" class="logo">
+      <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img"
+           onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'logo-fallback',textContent:'TripMate'}))">
+    </a>
+    
+    <div class="nav-links">
+      <a routerLink="/stays" class="is-current">Stays</a>
+      <a routerLink="/home" fragment="how">How it works</a>
+      <a routerLink="/signup" [queryParams]="{type: 'host'}">Become a Host</a>
+    </div>
+
+    <div class="nav-auth">
+      @if (!isLoggedIn) {
+        <a routerLink="/signup" class="nav-cta">Get started</a>
+        <a routerLink="/login" class="nav-login">Log in</a>
+      } @else {
+        <div class="user-menu">
+          <button class="user-avatar-btn" (click)="toggleUserDropdown()" aria-label="User menu">
+            <span class="avatar-placeholder">{{ user.initials }}</span>
+          </button>
+          
+          <div class="user-dropdown" [class.open]="isUserDropdownOpen">
+            <div class="dropdown-header">
+              <span class="dropdown-name">{{ user.name }}</span>
+              <span class="dropdown-email">{{ user.email }}</span>
+            </div>
+            <hr class="dropdown-divider">
+            <a routerLink="/dashboard" class="dropdown-item" (click)="isUserDropdownOpen = false">
+              <ion-icon name="location-outline"></ion-icon>
+              <span>My Trips</span>
+            </a>
+            <a routerLink="/wishlist" class="dropdown-item" (click)="isUserDropdownOpen = false">
+              <ion-icon name="heart-outline"></ion-icon>
+              <span>Wishlist</span>
+            </a>
+            <a routerLink="/profile" class="dropdown-item" (click)="isUserDropdownOpen = false">
+              <ion-icon name="person-outline"></ion-icon>
+              <span>Profile</span>
+            </a>
+            <hr class="dropdown-divider">
+            <button class="dropdown-item" (click)="logout()">
+              <ion-icon name="log-out-outline"></ion-icon>
+              <span>Log out</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </nav>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="stays-page">
+  <!-- Hero Search Banner -->
+  <div class="hero stays-hero">
+    <div class="stays-hero-body">
+      <h1>Every kind of stay, one search.</h1>
+      <p>Hotels, house rentals, cabins, villas and resorts — filter by what actually matters to your trip.</p>
+
+      <div class="hero-search">
+        <div class="hero-search-field">
+          <label for="searchInput">Search</label>
+          <input 
+            type="text" 
+            id="searchInput" 
+            [(ngModel)]="searchTerm" 
+            placeholder="Try 'Siargao' or 'Driftwood House'">
+        </div>
+        <button class="search-btn" type="button">
+          Search
+          <ion-icon name="search-outline"></ion-icon>
+        </button>
+        <button class="save-search-btn" type="button" aria-label="Save this search">Save search</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browse Layout -->
+  <main class="stays-main">
+    <button class="filters-toggle" (click)="toggleFilters()" type="button">
+      <ion-icon name="filter-outline"></ion-icon>
+      Filters
+    </button>
+
+    <div class="stays-layout">
+      <!-- Filter Sidebar -->
+      <aside class="filters" [class.is-open]="isFiltersOpen">
+        <div class="filters-head">
+          <h2>Filters</h2>
+          <button class="filters-close" (click)="toggleFilters()" type="button" aria-label="Close filters">
+            <ion-icon name="close-outline"></ion-icon>
+          </button>
+        </div>
+
+        <!-- Price Range -->
+        <div class="filter-group">
+          <h3>Price per night</h3>
+          <div class="price-range">
+            <div class="price-track">
+              <div class="price-fill" 
+                   [style.left.%]="((priceMin - 800) / 5200) * 100" 
+                   [style.right.%]="100 - (((priceMax - 800) / 5200) * 100)">
+              </div>
+            </div>
+            <input type="range" min="800" max="6000" step="100" [(ngModel)]="priceMin">
+            <input type="range" min="800" max="6000" step="100" [(ngModel)]="priceMax">
+          </div>
+          <div class="price-values">
+            <span>₱{{ priceMin | number }}</span>
+            <span>₱{{ priceMax | number }}</span>
+          </div>
+        </div>
+
+        <!-- Property Types -->
+        <div class="filter-group">
+          <h3>Property type</h3>
+          <div class="check-list">
+            @for (type of propertyTypes; track type) {
+              <label class="checkbox-row">
+                <input 
+                  type="checkbox" 
+                  [checked]="selectedTypes.includes(type)" 
+                  (change)="toggleType(type)">
+                <span>{{ type }}</span>
+                <span class="check-count">({{ typeCounts[type] || 0 }})</span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <!-- Rating -->
+        <div class="filter-group">
+          <h3>Rating</h3>
+          <div class="check-list">
+            <label class="radio-row">
+              <input type="radio" name="rating" [value]="0" [(ngModel)]="minRating">
+              <span>Any rating</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="rating" [value]="4.5" [(ngModel)]="minRating">
+              <span>4.5 &amp; up</span>
+            </label>
+            <label class="radio-row">
+              <input type="radio" name="rating" [value]="4.8" [(ngModel)]="minRating">
+              <span>4.8 &amp; up</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Guests -->
+        <div class="filter-group">
+          <h3>Guests</h3>
+          <div class="guest-stepper">
+            <button type="button" class="step-btn" (click)="decrementGuests()" aria-label="Fewer guests">
+              <ion-icon name="remove-outline"></ion-icon>
+            </button>
+            <span>{{ guestCount }}</span>
+            <button type="button" class="step-btn" (click)="incrementGuests()" aria-label="More guests">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+
+        <!-- Amenities -->
+        <div class="filter-group">
+          <h3>Amenities</h3>
+          <div class="check-list">
+            @for (amenity of amenitiesList; track amenity) {
+              <label class="checkbox-row">
+                <input 
+                  type="checkbox" 
+                  [checked]="selectedAmenities.includes(amenity)" 
+                  (change)="toggleAmenity(amenity)">
+                <span>{{ amenity }}</span>
+              </label>
+            }
+          </div>
+        </div>
+
+        <button class="clear-filters" (click)="clearFilters()" type="button">Clear all filters</button>
+      </aside>
+
+      <!-- Results Grid Area -->
+      <section class="results">
+        <div class="results-bar">
+          <p class="results-count">{{ filteredStays.length }} stays</p>
+          <div class="sort-field">
+            <label for="sortSelect">Sort by</label>
+            <select id="sortSelect" [(ngModel)]="sortBy">
+              <option value="recommended">Recommended</option>
+              <option value="price-asc">Price: low to high</option>
+              <option value="price-desc">Price: high to low</option>
+              <option value="rating-desc">Highest rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        @if (hasActiveFilters) {
+          <div class="active-chips">
+            @if (searchTerm) {
+              <span class="chip">
+                Search: "{{ searchTerm }}"
+                <button (click)="searchTerm = ''" aria-label="Remove search filter">&times;</button>
+              </span>
+            }
+            @for (type of selectedTypes; track type) {
+              <span class="chip">
+                {{ type }}
+                <button (click)="toggleType(type)" aria-label="Remove type filter">&times;</button>
+              </span>
+            }
+            @if (minRating > 0) {
+              <span class="chip">
+                {{ minRating }}+ Rating
+                <button (click)="minRating = 0" aria-label="Remove rating filter">&times;</button>
+              </span>
+            }
+            @if (guestCount > 1) {
+              <span class="chip">
+                {{ guestCount }} Guests
+                <button (click)="guestCount = 1" aria-label="Remove guests filter">&times;</button>
+              </span>
+            }
+            @for (amenity of selectedAmenities; track amenity) {
+              <span class="chip">
+                {{ amenity }}
+                <button (click)="toggleAmenity(amenity)" aria-label="Remove amenity filter">&times;</button>
+              </span>
+            }
+          </div>
+        }
+
+        <!-- Stays Grid -->
+        @if (filteredStays.length > 0) {
+          <div class="stays-grid">
+            @for (stay of filteredStays; track stay.id) {
+              <div class="listing-card">
+                <div class="listing-media">
+                  <img [src]="stay.image" [alt]="stay.title" />
+                  <button 
+                    class="fav-btn" 
+                    [class.is-active]="stay.isFavorite" 
+                    (click)="toggleFavorite(stay, $event)"
+                    aria-label="Favorite stay">
+                    <ion-icon [name]="stay.isFavorite ? 'heart' : 'heart-outline'"></ion-icon>
+                  </button>
+                </div>
+
+                <div class="listing-title-row">
+                  <h3 class="listing-title">{{ stay.title }}</h3>
+                  <div class="listing-rating">
+                    <ion-icon name="star"></ion-icon>
+                    <span>{{ stay.rating }}</span>
+                  </div>
+                </div>
+
+                <p class="listing-loc">{{ stay.location }}</p>
+                <p class="listing-guests">{{ stay.guests }} Guests &middot; {{ stay.type }}</p>
+
+                <div class="listing-amenities">
+                  @for (amenity of stay.amenities.slice(0, 3); track amenity) {
+                    <span class="amenity-pill">{{ amenity }}</span>
+                  }
+                  @if (stay.amenities.length > 3) {
+                    <span class="amenity-pill">+{{ stay.amenities.length - 3 }} more</span>
+                  }
+                </div>
+
+                <div class="listing-price">
+                  <span class="price-val">₱{{ stay.price | number }}</span>
+                  <span class="price-unit"> / night</span>
+                </div>
+
+                <a [routerLink]="['/stays', stay.id]" class="listing-book">View Details</a>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Empty Filter State -->
+          <div class="empty-state">
+            <p class="empty-title">No stays match those filters.</p>
+            <p class="empty-sub">Try widening your price range or clearing a filter.</p>
+            <button class="btn-ghost" (click)="clearFilters()" type="button">Clear all filters</button>
+          </div>
+        }
+      </section>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a routerLink="/home" class="logo">
+          <img src="assets/images/tripmate.svg" alt="TripMate" class="logo-img">
+        </a>
+        <p>A Filipino-built platform for booking hotels and house rentals across the Philippines.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a routerLink="/stays">Stays</a>
+          <a routerLink="/home" fragment="how">How it works</a>
+          <a routerLink="/host">Become a Host</a>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <a href="#">Cancellation policy</a>
+          <a href="#">Contact us</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 TripMate. Made in Quezon City.</span>
+      <span>Terms &middot; Privacy</span>
+    </div>
+  </footer>
+</ion-content>

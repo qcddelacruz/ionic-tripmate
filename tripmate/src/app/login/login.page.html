@@ -1,0 +1,62 @@
+<ion-content>
+  <div class="top-nav">
+    <a routerLink="/home" class="back-link">← Back</a>
+  </div>
+
+  <div class="hero-copy">
+    <h2 class="tagline">Plan your trips seamlessly</h2>
+  </div>
+
+  <main>
+    <div class="card">
+      <h1>Welcome Back</h1>
+      <p class="sub">Log in to your account</p>
+
+      <form (ngSubmit)="onLogin()">
+        <div class="field">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="email"
+            name="email"
+            placeholder="name@example.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+        </div>
+
+        @if (errorMessage) {
+          <div class="error-msg">{{ errorMessage }}</div>
+        }
+
+        <div class="checkbox-row remember">
+          <a routerLink="/forgotpassword">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn-primary">
+          Sign In
+        </button>
+      </form>
+
+      <p class="foot-link">
+        Don't have an account? <a routerLink="/signup">Sign up</a>
+      </p>
+
+      <p class="secure-note">🔒 Encrypted and secure connection</p>
+    </div>
+  </main>
+</ion-content>
